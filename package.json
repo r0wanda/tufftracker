@@ -1,0 +1,32 @@
+{
+  "name": "tufftracker",
+  "version": "1.0.0",
+  "description": "seattle metro tracker",
+  "homepage": "https://github.com/r0wanda/tufftracker#readme",
+  "bugs": {
+    "url": "https://github.com/r0wanda/tufftracker/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/r0wanda/tufftracker.git"
+  },
+  "license": "GPL-3.0-or-later",
+  "author": "Rowan",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc && cp src/*.html dist/",
+    "test": "npm run build && node --enable-source-maps ."
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "ip": "^2.0.1",
+    "onebusaway-sdk": "^1.10.11"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.5",
+    "@types/ip": "^1.1.3"
+  }
+}
