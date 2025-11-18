@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import OneBusAway from 'onebusaway-sdk';
+import findStop from './stop.js';
 dotenv.config();
 
 class Tracker extends OneBusAway {
@@ -9,3 +10,5 @@ class Tracker extends OneBusAway {
         });
     }
 }
+
+console.log(await findStop());

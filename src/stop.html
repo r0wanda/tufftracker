@@ -11,16 +11,53 @@
                 margin: 0;
             }
             html, body, #map {
-                height: 80%;
+                height: 80vh;
                 width: 100vw;
+            }
+            #cont {
+                display: flex;
+                height: 20vh;
+                width: 100vw;
+                justify-content: center;
+                align-items: center;
+            }
+            #send {
+                display: inline-flex;
+                background-color: darkslategray;
+                width: 20vw;
+                height: 15vh;
+                border: none;
+                font-size: 2em;
+                font-weight: bold;
+                font-family: Arial, Helvetica, sans-serif;
+                align-items: center;
+                justify-content: center;
+                user-select: none;
+                border-radius: 25px;
+                cursor: pointer;
             }
         </style>
     </head>
     <body>
         <div id="map"></div>
+        <div id="cont"><div id="send"><span>Send Coordinates</span></div></div>
         <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
         <script>
-
+            const map = L.map('map').setView([47.6204, -122.3491], 13);
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
+            let mark = false;
+            map.on('click', (e) => {
+                if (!mark) mark = L.marker(e.latlng).addTo(map);
+                else mark.setLatLng(e.latlng);
+            });
+            document.getElementById('send').onclick = () => {
+                if (!mark) return;
+                const ll = mark.getLatLng();
+                window.location.href = `/cb?lat=${ll.lat}&lon=${ll.lng}`;
+            };
         </script>
     </body>
 </html>
