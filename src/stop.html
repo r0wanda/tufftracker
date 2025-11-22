@@ -56,7 +56,7 @@
             document.getElementById('send').onclick = () => {
                 if (!mark) return;
                 const ll = mark.getLatLng();
-                window.location.href = `/cb?lat=${ll.lat}&lon=${ll.lng}`;
+                window.location.href = `/cb?lat=${ll.lat}&lon=${ll.lng}&id=${Math.random().toString(16).slice(2)}`;
             };
         </script>
     </body>

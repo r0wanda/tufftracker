@@ -3,8 +3,87 @@
     <head>
         <meta charset="UTF-8">
         <title>one buss away</title>
+        <style>
+            :root {
+                font-family: Arial, Helvetica, sans-serif;
+            }
+        </style>
     </head>
     <body>
-        <h1>You can close this tab now 😛</h1>
+        <h1>Select your stop</h1>
+        <p id="phold">Loading stops...</p>
+        <script type="module">
+            import ky from 'https://cdn.jsdelivr.net/npm/ky@1.14.0/+esm';
+            function updateInfo(stops, sel, routeI, routes) {
+                return () => {
+                    const val = parseInt(sel.value);
+                    if (isNaN(val)) return;
+                    const stop = stops.list[val];
+                    [...routeI.childNodes].map(n => n.remove());
+                    for (const rId of stop.routeIds) {
+                        const n = document.createElement('li');
+                        const r = routes[rId];
+                        if (!r) continue;
+                        n.textContent = `${r.nullSafeShortName} ${r.longName ? `(${r.longName})` : ''}`;
+                        routeI.appendChild(n);
+                    }
+                }
+            }
+            function loadStops(stops) {
+                stops = stops.data;
+                console.log(stops);
+                const routes = {};
+                for (const r of stops.references.routes) {
+                    routes[r.id] = r;
+                }
+                document.getElementById('phold').remove();
+                const sel = document.createElement('select');
+                const routeI = document.createElement('ul');
+                for (let i = 0; i < stops.list.length; i++) {
+                    const n = document.createElement('option');
+                    n.value = i.toString();
+                    const stop = stops.list[i];
+                    n.textContent = `${stop.name} (Direction: ${stop.direction})`;
+                    sel.appendChild(n);
+                }
+                document.body.appendChild(sel);
+                document.body.appendChild(document.createElement('br'));
+                const p = document.createElement('p');
+                p.textContent = "Routes served:"
+                document.body.appendChild(p);
+                document.body.appendChild(routeI);
+                const btn = document.createElement('button');
+                btn.textContent = "Submit"
+                document.body.appendChild(btn);
+                const upd = updateInfo(stops, sel, routeI, routes);
+                upd();
+                sel.addEventListener('input', upd);
+                btn.addEventListener('click', () => {
+                    const val = parseInt(sel.value);
+                    if (isNaN(val)) return;
+                    const stop = stops.list[val];
+                    window.location.href = `/cbfin?stop=${stop.id}`;
+                });
+            }
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            if (!id) throw new Error('No id found!');
+            const prom = 
+            (async () => {
+                try {
+                    const data = await ky(`/stops?id=${id}`, {
+                        retry: {
+                            limit: 100,
+                            delay: (n) => 100,
+                            statusCodes: [ 503 ]
+                        }
+                    }).json();
+                    loadStops(data);
+                } catch (err) {
+                    console.error(err);
+                    alert('Error, check console');
+                }
+            })();
+        </script>
     </body>
 </html>
