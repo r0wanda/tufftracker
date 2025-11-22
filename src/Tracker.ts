@@ -76,7 +76,7 @@ export default class Tracker extends OneBusAway {
     }
     async render(route: string, sign: string, time: number, cols: number, rt = false): Promise<[string, number]> {
         const opts = {
-            font: 'miniwi'
+            font: 'Slant'
         }
 
         let routeR = '';
